@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import os
 
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split, cross_val_score
@@ -13,10 +14,10 @@ from sklearn.metrics import mean_squared_error, r2_score
 st.set_page_config(page_title="Phân tích & Dự đoán Doanh Thu", layout="wide")
 st.title("📊 Phân tích & Dự đoán Doanh Thu từ dữ liệu bán hàng")
 
-# 📁 Upload file CSV
-uploaded_file = st.file_uploader("Tải lên file Sales_Data_P7.csv", type=["csv"])
-if uploaded_file:
-    df = pd.read_csv(uploaded_file)
+# 📁 Tải dữ liệu trực tiếp
+file_path = "Sales_Data_P7.csv"
+if os.path.exists(file_path):
+    df = pd.read_csv(file_path)
 
     # 🔧 Tiền xử lý
     df['Date'] = pd.to_datetime(df['Date'])
@@ -29,23 +30,15 @@ if uploaded_file:
     st.subheader("📋 Dữ liệu mẫu")
     st.dataframe(df.head())
 
-    # 📊 Phân tích dữ liệu
+    # 📈 Phân tích dữ liệu
     st.subheader("📈 Phân tích dữ liệu")
-    st.write("✅ Doanh thu theo vùng:")
     st.dataframe(df.groupby('Region')['Revenue'].sum().sort_values(ascending=False))
-
-    st.write("✅ Doanh thu theo danh mục:")
     st.dataframe(df.groupby('Category')['Revenue'].sum().sort_values(ascending=False))
-
-    st.write("✅ Doanh thu theo tháng:")
     st.dataframe(df.groupby('Month')['Revenue'].sum().sort_values(ascending=False))
-
-    st.write("✅ Thống kê độ tuổi khách hàng:")
     st.dataframe(df['Customer_Age'].describe())
 
     # 📊 Trực quan hóa
     st.subheader("📊 Trực quan hóa dữ liệu")
-
     fig1, ax1 = plt.subplots()
     df.groupby('Region')['Revenue'].sum().plot(kind='bar', color='skyblue', ax=ax1)
     ax1.set_title("Doanh thu theo vùng")
@@ -75,7 +68,6 @@ if uploaded_file:
 
     # 🤖 Huấn luyện mô hình
     st.subheader("🤖 Huấn luyện mô hình Linear Regression")
-
     X = df[['Quantity', 'Unit_Price', 'Discount', 'Customer_Age']]
     y = df['Revenue']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -110,3 +102,5 @@ if uploaded_file:
     # 🔁 Cross Validation
     scores = cross_val_score(model, X, y, cv=5, scoring='r2')
     st.write(f"📊 R2 trung bình qua 5 lần kiểm tra: {scores.mean():.2f}")
+else:
+    st.warning("⚠️ Không tìm thấy file Sales_Data_P7.csv trong thư mục hiện tại.")
