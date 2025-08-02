@@ -14,7 +14,7 @@ st.set_page_config(page_title="Phân tích & Dự đoán Doanh Thu", layout="wid
 st.title("📊 Phân tích & Dự đoán Doanh Thu từ dữ liệu bán hàng")
 
 # 📁 Upload file CSV
-uploaded_file = st.file_uploader("Tải lên file Sales_Data_P7.csv", type=["csv"])
+uploaded_file = st.file_uploader("Tải lên file https://raw.githubusercontent.com/truong11113/HoangTruongBS00955/refs/heads/main/Sales_Data_P7.csv", type=["csv"])
 if uploaded_file:
     df = pd.read_csv(uploaded_file)
 
